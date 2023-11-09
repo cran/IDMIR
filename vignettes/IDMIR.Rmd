@@ -1,0 +1,193 @@
+---
+title: "IDMIR User Guide"
+author: "Xilong Zhao, Jiashuo Wu, Junwei Han"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+      toc: yes
+vignette: >
+  %\VignetteIndexEntry{IDMIR User Guide} 
+
+  %\VignetteEncoding{UTF-8} 
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+```{r, include = FALSE}
+library(IDMIR)
+```
+
+## Introduce
+
+This vignette illustrates how to easily use the **IDMIR package**. Here, we present a network-based computational approach, **IDMIR**, identify dysregulated miRNAs by integrating gene transcriptomic data and a miRNA interaction network. Furthermore, the package can perform cox regression analysis to verify miRNA's prognostic efficacy. There are also some functions used to visualize the results of survival analysis.
+
+This network-based method consists of two major parts:
+
+-   1.Calculating the GDEscore. We conducted a statistical comparison of gene expression values between case and control groups (e.g. disease and normal). In this case, we use Student's t-test method to compute the gene differentially expressed level for each gene between disease and normal samples, and convert the t-test p-value of each gene to z-score. The z-score is defined as GDEscore, and a larger GDEscore indicates the gene regulated by disease to a greater extent.
+
+-   2.Constructing network and performing randomization. In our method, we fist constructed a miRNA-GO bipartite network. The molecular function gene sets were downloaded from C5 Gene sets derived from the GO Molecular Function ontology in the Molecular Signatures Database (MSigDB). We then defined an edge between a miRNA and a GO term if they have at least a common gene, and give the weight of this edge that calculate by the Jaccard index and GDEscore. Next, we proposed to construct a miRNA-miRNA interaction network. The information from the miRNA-GO bipartite graph was used to evaluate the extent of interaction between two miRNAs as the edge's weight. We consider that the extent of interaction between two miRNAs will be stronger when there are more GO terms they target in common and the more related they are to these GO terms. Then, we used the eigenvector centrality measure to calculate how central each miRNA is in this miRNA-miRNA interaction network. Finally, the statistical significance of these centrality scores is assessed using a bootstrap-based randomization method. Statistically significant miRNAs will serve as potential dysregulated miRNAs.
+
+    This package provides the `GetData_Mirna` function to return example data set and environment variables, such as the gene expression profile and so on.</font>
+
+------------------------------------------------------------------------
+
+## <font face="微软雅黑">Example 1 : Calculate the GDEscore. </font>
+
+<font face="微软雅黑"> The function `GetGDEscore` is used to calculate the gene differential expression score (GDEscore). This function requires users to input the gene expression matrix and the sample label ("1" represents the disease sample. "0" represents the normal sample.). These sample data are stored in this package.
+
+The commands are as follows: </font>
+
+```{r,eval=TRUE}
+# Obtain the example data
+GEP<-GetData_Mirna("GEP")
+label<-GetData_Mirna("label")
+# Calculate the zscore
+GDEscore<-GetGDEscore(GEP,label)
+head(GDEscore)
+```
+
+------------------------------------------------------------------------
+
+## <font face="微软雅黑"> Example 2 : Identify candidate miRNAs by random-walk algorithm. </font>
+
+<font face="微软雅黑"> The function `IdentifyMiRNA` is used to get a ranked list of strong and weak associations of miRNA with disease. According to our method, in this function, the user needs to enter the GDEscore which is the result of the `GetGDEscore` function. The *nperm* is the number of perturbations, and the *damping* is the restart probability of random walk. The commands are as follows: </font>
+
+```{r,eval=FALSE}
+# load depend package
+require(igraph)
+# Calculate the centrality score of miRNAs
+MiRNAScore<-IdentifyMiRNA(de_kich,nperm = 10,damping = 0.9)
+###view the result
+MiRNAScore[1:5,-2]
+
+```
+
+```{r,echo=FALSE}
+###Get the result of this function
+MiRNAScore<-GetData_Mirna("MiRNAScore")
+MiRNAScore[1:5,-2]
+```
+
+------------------------------------------------------------------------
+
+## <font face="微软雅黑"> Example 3 : Build a multivariate Cox regression model using the targets of a single miRNA.</font>
+
+<font face="微软雅黑"> The function `SingleMiRNA_CRModel` is used to build a multivariate Cox model. According to our method, in this function, the user needs to enter the miRNA of interest. The *ExpData* is a gene expression profile of interest. The *MiRNA* is the miRNA ID, and the *SurvivalData* is survival data. The *cutoff.point* is a number used to divide high-risk and low-risk groups by risk score (default is median). The commands are as follows: </font>
+
+```{r,eval=TRUE}
+# load depend package
+require(survival)
+###Get the survival and gene expression data
+GEP<-GetData_Mirna("GEP")
+survival<-GetData_Mirna("survival")
+# Build a multivariate cox model
+SingleMiRNA_CRData<-SingleMiRNA_CRModel(GEP,"hsa-miR-21-5p",cutoff.point=NULL,survival)
+###view the result
+data.frame(SingleMiRNA_CRData[[1]])[1:5,]
+###view the result
+data.frame(SingleMiRNA_CRData[[2]])[1:5,]
+
+```
+
+------------------------------------------------------------------------
+
+## <font face="微软雅黑"> Example 4 : Build a multivariate Cox regression model by integrating the models constructed separately based on different miRNA targets.</font>
+
+<font face="微软雅黑"> The function `MutiMiRNA_CRModel` is used to build a multivariate Cox model. According to our method, in this function, the user needs to enter the miRNAs of interest. The *ExpData* is a gene expression profile of interest, The *MiRNAs* is the miRNA ID, and the *SurvivalData* is survival data. The *cutoff.point* is a number used to divide high-risk and low-risk groups by risk score (default is median). The commands are as follows: </font>
+
+```{r,eval=TRUE}
+# load depend package
+require(survival)
+###Get the survival and gene expression data
+GEP<-GetData_Mirna("GEP")
+survival<-GetData_Mirna("survival")
+MiRNAs<-c("hsa-miR-21-5p","hsa-miR-26a-5p","hsa-miR-369-5p","hsa-miR-1238-3p","hsa-miR-10b-5p")
+# Build a multivariate cox model
+MutiMiRNA_CRData<-MutiMiRNA_CRModel(GEP,MiRNAs,cutoff.point=NULL,survival)
+###view the result
+data.frame(MutiMiRNA_CRData[[1]])[1:5,]
+###view the result
+data.frame(MutiMiRNA_CRData[[2]])[1:5,]
+
+```
+
+------------------------------------------------------------------------
+
+## <font face="微软雅黑"> Visualize 1: Plot the Kaplan-Meier curve. </font>
+
+<font face="微软雅黑"> The function `plotSurvival` is used to plot the Kaplan-Meier. The user needs to enter the result of the `SingleMiRNA_CRModel` function or the `MutiMiRNA_CRModel` function. The commands are as follows: </font>
+
+```{r,message=FALSE}
+# load depend package
+require(survminer)
+require(survival)
+
+###Get the survival and gene expression data
+GEP<-GetData_Mirna("GEP")
+survival<-GetData_Mirna("survival")
+# plot the Kaplan-Meier curve
+SingleMiRNA_CRData<-SingleMiRNA_CRModel(GEP,"hsa-miR-21-5p",cutoff.point=NULL,survival)
+PlotSurvival(SingleMiRNA_CRData)
+```
+
+------------------------------------------------------------------------
+
+## <font face="微软雅黑"> Visualize 2: Plot the heatmap of miRNA targets expression.</font>
+
+##### 
+
+<font face="微软雅黑"> The function `PlotHeatmap` can plot the heatmap of miRNA target expression. The user needs to enter the result of the `SingleMiRNA_CRModel` function or the `MutiMiRNA_CRModel`. The commands are as follows: </font>
+
+```{r,message=FALSE}
+# load depend package
+require(pheatmap)
+require(survival)
+###Get the survival and gene expression data
+GEP<-GetData_Mirna("GEP")
+survival<-GetData_Mirna("survival")
+# plot the heatmap of miRNA targets expression
+SingleMiRNA_CRData<-SingleMiRNA_CRModel(GEP,"hsa-miR-21-5p",cutoff.point=NULL,survival)
+PlotHeatmap(SingleMiRNA_CRData)
+```
+
+------------------------------------------------------------------------
+
+## <font face="微软雅黑"> Visualize 3: Plot the forest diagram.</font>
+
+##### 
+
+<font face="微软雅黑"> The function `PlotForest` can visualize the result of Cox regression analysis through forest plot. The user needs to enter the result of the `SingleMiRNA_CRModel` function or the `MutiMiRNA_CRModel`. The commands are as follows: </font>
+
+```{r,message=FALSE}
+# load depend package
+require(forestplot)
+require(survival)
+###Get the survival and gene expression data
+GEP<-GetData_Mirna("GEP")
+survival<-GetData_Mirna("survival")
+# plot the forest diagram
+SingleMiRNA_CRData<-SingleMiRNA_CRModel(GEP,"hsa-miR-21-5p",cutoff.point=NULL,survival)
+PlotForest(SingleMiRNA_CRData)
+```
+
+------------------------------------------------------------------------
+
+## <font face="微软雅黑"> Visualize 4: Plot the Scatter diagram.</font>
+
+##### 
+
+<font face="微软雅黑"> The function `PlotScatter` can visualize the clinical information of samples through scatter diagram. The user needs to enter the result of the `SingleMiRNA_CRModel` function or the `MutiMiRNA_CRModel`. The commands are as follows: </font>
+
+```{r,message=FALSE}
+# load depend package
+require(egg)
+require(survival)
+require(ggplot2)
+###Get the survival and gene expression data
+GEP<-GetData_Mirna("GEP")
+survival<-GetData_Mirna("survival")
+# plot the scatter diagram
+SingleMiRNA_CRData<-SingleMiRNA_CRModel(GEP,"hsa-miR-21-5p",cutoff.point=NULL,survival)
+PlotScatter(SingleMiRNA_CRData)
+```
+
+------------------------------------------------------------------------

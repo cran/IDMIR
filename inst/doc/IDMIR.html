@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Xilong Zhao, Jiashuo Wu, Junwei Han" />
+
+<meta name="date" content="2023-11-09" />
+
+<title>IDMIR User Guide</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">IDMIR User Guide</h1>
+<h4 class="author">Xilong Zhao, Jiashuo Wu, Junwei Han</h4>
+<h4 class="date">2023-11-09</h4>
+
+
+<div id="TOC">
+<ul>
+<li><a href="#introduce" id="toc-introduce">Introduce</a></li>
+<li><a href="#example-1-calculate-the-gdescore." id="toc-example-1-calculate-the-gdescore."><font face="微软雅黑">Example
+1 : Calculate the GDEscore. </font></a></li>
+<li><a href="#example-2-identify-candidate-mirnas-by-random-walk-algorithm." id="toc-example-2-identify-candidate-mirnas-by-random-walk-algorithm."><font face="微软雅黑">
+Example 2 : Identify candidate miRNAs by random-walk algorithm.
+</font></a></li>
+<li><a href="#example-3-build-a-multivariate-cox-regression-model-using-the-targets-of-a-single-mirna." id="toc-example-3-build-a-multivariate-cox-regression-model-using-the-targets-of-a-single-mirna."><font face="微软雅黑">
+Example 3 : Build a multivariate Cox regression model using the targets
+of a single miRNA.</font></a></li>
+<li><a href="#example-4-build-a-multivariate-cox-regression-model-by-integrating-the-models-constructed-separately-based-on-different-mirna-targets." id="toc-example-4-build-a-multivariate-cox-regression-model-by-integrating-the-models-constructed-separately-based-on-different-mirna-targets."><font face="微软雅黑">
+Example 4 : Build a multivariate Cox regression model by integrating the
+models constructed separately based on different miRNA
+targets.</font></a></li>
+<li><a href="#visualize-1-plot-the-kaplan-meier-curve." id="toc-visualize-1-plot-the-kaplan-meier-curve."><font face="微软雅黑">
+Visualize 1: Plot the Kaplan-Meier curve. </font></a></li>
+<li><a href="#visualize-2-plot-the-heatmap-of-mirna-targets-expression." id="toc-visualize-2-plot-the-heatmap-of-mirna-targets-expression."><font face="微软雅黑">
+Visualize 2: Plot the heatmap of miRNA targets
+expression.</font></a></li>
+<li><a href="#visualize-3-plot-the-forest-diagram." id="toc-visualize-3-plot-the-forest-diagram."><font face="微软雅黑">
+Visualize 3: Plot the forest diagram.</font></a></li>
+<li><a href="#visualize-4-plot-the-scatter-diagram." id="toc-visualize-4-plot-the-scatter-diagram."><font face="微软雅黑">
+Visualize 4: Plot the Scatter diagram.</font></a></li>
+</ul>
+</div>
+
+<div id="introduce" class="section level2">
+<h2>Introduce</h2>
+<p>This vignette illustrates how to easily use the <strong>IDMIR
+package</strong>. Here, we present a network-based computational
+approach, <strong>IDMIR</strong>, identify dysregulated miRNAs by
+integrating gene transcriptomic data and a miRNA interaction network.
+Furthermore, the package can perform cox regression analysis to verify
+miRNA’s prognostic efficacy. There are also some functions used to
+visualize the results of survival analysis.</p>
+<p>This network-based method consists of two major parts:</p>
+<ul>
+<li><p>1.Calculating the GDEscore. We conducted a statistical comparison
+of gene expression values between case and control groups (e.g. disease
+and normal). In this case, we use Student’s t-test method to compute the
+gene differentially expressed level for each gene between disease and
+normal samples, and convert the t-test p-value of each gene to z-score.
+The z-score is defined as GDEscore, and a larger GDEscore indicates the
+gene regulated by disease to a greater extent.</p></li>
+<li><p>2.Constructing network and performing randomization. In our
+method, we fist constructed a miRNA-GO bipartite network. The molecular
+function gene sets were downloaded from C5 Gene sets derived from the GO
+Molecular Function ontology in the Molecular Signatures Database
+(MSigDB). We then defined an edge between a miRNA and a GO term if they
+have at least a common gene, and give the weight of this edge that
+calculate by the Jaccard index and GDEscore. Next, we proposed to
+construct a miRNA-miRNA interaction network. The information from the
+miRNA-GO bipartite graph was used to evaluate the extent of interaction
+between two miRNAs as the edge’s weight. We consider that the extent of
+interaction between two miRNAs will be stronger when there are more GO
+terms they target in common and the more related they are to these GO
+terms. Then, we used the eigenvector centrality measure to calculate how
+central each miRNA is in this miRNA-miRNA interaction network. Finally,
+the statistical significance of these centrality scores is assessed
+using a bootstrap-based randomization method. Statistically significant
+miRNAs will serve as potential dysregulated miRNAs.</p>
+<p>This package provides the <code>GetData_Mirna</code> function to
+return example data set and environment variables, such as the gene
+expression profile and so on.</font></p></li>
+</ul>
+<hr />
+</div>
+<div id="example-1-calculate-the-gdescore." class="section level2">
+<h2><font face="微软雅黑">Example 1 : Calculate the GDEscore.
+</font></h2>
+<p><font face="微软雅黑"> The function <code>GetGDEscore</code> is used
+to calculate the gene differential expression score (GDEscore). This
+function requires users to input the gene expression matrix and the
+sample label (“1” represents the disease sample. “0” represents the
+normal sample.). These sample data are stored in this package.</p>
+<p>The commands are as follows: </font></p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># Obtain the example data</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>GEP<span class="ot">&lt;-</span><span class="fu">GetData_Mirna</span>(<span class="st">&quot;GEP&quot;</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>label<span class="ot">&lt;-</span><span class="fu">GetData_Mirna</span>(<span class="st">&quot;label&quot;</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co"># Calculate the zscore</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>GDEscore<span class="ot">&lt;-</span><span class="fu">GetGDEscore</span>(GEP,label)</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="fu">head</span>(GDEscore)</span></code></pre></div>
+<pre><code>##         GDEscore
+## CFH     15.74888
+## KLHL13  23.12946
+## CYP26B1 13.81447
+## CFLAR   17.97727
+## HSPB6   26.25801
+## PDK4    23.36144</code></pre>
+<hr />
+</div>
+<div id="example-2-identify-candidate-mirnas-by-random-walk-algorithm." class="section level2">
+<h2><font face="微软雅黑"> Example 2 : Identify candidate miRNAs by
+random-walk algorithm. </font></h2>
+<p><font face="微软雅黑"> The function <code>IdentifyMiRNA</code> is
+used to get a ranked list of strong and weak associations of miRNA with
+disease. According to our method, in this function, the user needs to
+enter the GDEscore which is the result of the <code>GetGDEscore</code>
+function. The <em>nperm</em> is the number of perturbations, and the
+<em>damping</em> is the restart probability of random walk. The commands
+are as follows: </font></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># load depend package</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="fu">require</span>(igraph)</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co"># Calculate the centrality score of miRNAs</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>MiRNAScore<span class="ot">&lt;-</span><span class="fu">IdentifyMiRNA</span>(de_kich,<span class="at">nperm =</span> <span class="dv">10</span>,<span class="at">damping =</span> <span class="fl">0.9</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="do">###view the result</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>MiRNAScore[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,<span class="sc">-</span><span class="dv">2</span>]</span></code></pre></div>
+<pre><code>##               MiRNA Number   Score P-value   FDR
+## 255   hsa-miR-21-5p     49 0.00195   0.000 0.000
+## 505  hsa-miR-369-5p     14 0.00118   0.000 0.000
+## 294  hsa-miR-26a-5p      4 0.00180   0.000 0.000
+## 65  hsa-miR-1238-3p    140 0.00099   0.001 0.001
+## 30   hsa-miR-10b-5p      5 0.00016   0.002 0.002</code></pre>
+<hr />
+</div>
+<div id="example-3-build-a-multivariate-cox-regression-model-using-the-targets-of-a-single-mirna." class="section level2">
+<h2><font face="微软雅黑"> Example 3 : Build a multivariate Cox
+regression model using the targets of a single miRNA.</font></h2>
+<p><font face="微软雅黑"> The function <code>SingleMiRNA_CRModel</code>
+is used to build a multivariate Cox model. According to our method, in
+this function, the user needs to enter the miRNA of interest. The
+<em>ExpData</em> is a gene expression profile of interest. The
+<em>MiRNA</em> is the miRNA ID, and the <em>SurvivalData</em> is
+survival data. The <em>cutoff.point</em> is a number used to divide
+high-risk and low-risk groups by risk score (default is median). The
+commands are as follows: </font></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># load depend package</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="fu">require</span>(survival)</span></code></pre></div>
+<pre><code>## Loading required package: survival</code></pre>
+<pre><code>## Warning: package &#39;survival&#39; was built under R version 4.2.3</code></pre>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="do">###Get the survival and gene expression data</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>GEP<span class="ot">&lt;-</span><span class="fu">GetData_Mirna</span>(<span class="st">&quot;GEP&quot;</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>survival<span class="ot">&lt;-</span><span class="fu">GetData_Mirna</span>(<span class="st">&quot;survival&quot;</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co"># Build a multivariate cox model</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>SingleMiRNA_CRData<span class="ot">&lt;-</span><span class="fu">SingleMiRNA_CRModel</span>(GEP,<span class="st">&quot;hsa-miR-21-5p&quot;</span>,<span class="at">cutoff.point=</span><span class="cn">NULL</span>,survival)</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="do">###view the result</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="fu">data.frame</span>(SingleMiRNA_CRData[[<span class="dv">1</span>]])[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,]</span></code></pre></div>
+<pre><code>##                  status time TGFBR3 TIMP3 ACTA2 HIPK3 RECK NFIB TGFBR2 CFL2
+## TCGA.3C.AAAU.01A      0 4047   -0.7   2.5  -0.6  -0.2 -0.9 -0.8   -0.7 -0.4
+## TCGA.3C.AALI.01A      0 4005   -0.7  -0.3  -0.2  -1.2 -0.4 -0.2   -0.5 -0.5
+## TCGA.3C.AALJ.01A      0 1474   -0.6   0.6  -0.3  -1.1 -0.7 -0.6   -0.4 -0.3
+## TCGA.3C.AALK.01A      0 1448   -0.5   0.9   0.5  -0.7  0.3 -0.2   -0.2 -0.4
+## TCGA.4H.AAAK.01A      0  348   -0.6   1.7   0.1  -0.7  1.7 -0.2   -0.1 -0.4
+##                        score group
+## TCGA.3C.AAAU.01A -0.70282866   low
+## TCGA.3C.AALI.01A -0.12534517   low
+## TCGA.3C.AALJ.01A -0.29593916   low
+## TCGA.3C.AALK.01A -0.13408981   low
+## TCGA.4H.AAAK.01A  0.04991242  high</code></pre>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="do">###view the result</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="fu">data.frame</span>(SingleMiRNA_CRData[[<span class="dv">2</span>]])[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,]</span></code></pre></div>
+<pre><code>##               HR    HR.95L   HR.95H         beta    P.value
+## TGFBR3 0.9898017 0.8218065 1.192139 -0.010250697 0.91398271
+## TIMP3  0.8422946 0.6946581 1.021309 -0.171625436 0.08089412
+## ACTA2  1.0060618 0.8649299 1.170223  0.006043537 0.93753659
+## HIPK3  0.9954106 0.8358977 1.185363 -0.004599944 0.95882996
+## RECK   1.2506863 1.0449974 1.496861  0.223692413 0.01468395</code></pre>
+<hr />
+</div>
+<div id="example-4-build-a-multivariate-cox-regression-model-by-integrating-the-models-constructed-separately-based-on-different-mirna-targets." class="section level2">
+<h2><font face="微软雅黑"> Example 4 : Build a multivariate Cox
+regression model by integrating the models constructed separately based
+on different miRNA targets.</font></h2>
+<p><font face="微软雅黑"> The function <code>MutiMiRNA_CRModel</code> is
+used to build a multivariate Cox model. According to our method, in this
+function, the user needs to enter the miRNAs of interest. The
+<em>ExpData</em> is a gene expression profile of interest, The
+<em>MiRNAs</em> is the miRNA ID, and the <em>SurvivalData</em> is
+survival data. The <em>cutoff.point</em> is a number used to divide
+high-risk and low-risk groups by risk score (default is median). The
+commands are as follows: </font></p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="co"># load depend package</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="fu">require</span>(survival)</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a><span class="do">###Get the survival and gene expression data</span></span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>GEP<span class="ot">&lt;-</span><span class="fu">GetData_Mirna</span>(<span class="st">&quot;GEP&quot;</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>survival<span class="ot">&lt;-</span><span class="fu">GetData_Mirna</span>(<span class="st">&quot;survival&quot;</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>MiRNAs<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="st">&quot;hsa-miR-21-5p&quot;</span>,<span class="st">&quot;hsa-miR-26a-5p&quot;</span>,<span class="st">&quot;hsa-miR-369-5p&quot;</span>,<span class="st">&quot;hsa-miR-1238-3p&quot;</span>,<span class="st">&quot;hsa-miR-10b-5p&quot;</span>)</span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a><span class="co"># Build a multivariate cox model</span></span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>MutiMiRNA_CRData<span class="ot">&lt;-</span><span class="fu">MutiMiRNA_CRModel</span>(GEP,MiRNAs,<span class="at">cutoff.point=</span><span class="cn">NULL</span>,survival)</span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a><span class="do">###view the result</span></span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a><span class="fu">data.frame</span>(MutiMiRNA_CRData[[<span class="dv">1</span>]])[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,]</span></code></pre></div>
+<pre><code>##                  status time hsa.miR.21.5p hsa.miR.26a.5p hsa.miR.369.5p
+## TCGA.3C.AAAU.01A      0 4047   -0.70282866    -0.12291216     -0.1552759
+## TCGA.3C.AALI.01A      0 4005   -0.12534517    -0.08779440     -0.1552759
+## TCGA.3C.AALJ.01A      0 1474   -0.29593916    -0.07023552     -0.1330936
+## TCGA.3C.AALK.01A      0 1448   -0.13408981    -0.03511776     -0.1109113
+## TCGA.4H.AAAK.01A      0  348    0.04991242    -0.01755888     -0.1330936
+##                  hsa.miR.1238.3p hsa.miR.10b.5p      score group
+## TCGA.3C.AAAU.01A     0.141563149    -0.08886492 -0.2791553   low
+## TCGA.3C.AALI.01A    -0.141549442    -0.07109194 -0.1218944   low
+## TCGA.3C.AALJ.01A     0.002988404    -0.08886492 -0.1340748   low
+## TCGA.3C.AALK.01A    -0.222947388    -0.05331895 -0.2123948   low
+## TCGA.4H.AAAK.01A    -0.251633884    -0.07109194 -0.1077162   low</code></pre>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="do">###view the result</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="fu">data.frame</span>(MutiMiRNA_CRData[[<span class="dv">2</span>]])[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,]</span></code></pre></div>
+<pre><code>##                        HR    HR.95L   HR.95H        beta      P.value
+## hsa.miR.21.5p   1.9206555 1.1699532 3.153047  0.65266652 0.0098633164
+## hsa.miR.26a.5p  0.9126143 0.3668481 2.270326 -0.09144195 0.8440989401
+## hsa.miR.369.5p  0.6594771 0.2967931 1.465364 -0.41630808 0.3067975175
+## hsa.miR.1238.3p 2.1555406 1.4509625 3.202257  0.76804155 0.0001428791
+## hsa.miR.10b.5p  1.0584837 0.5469643 2.048375  0.05683745 0.8660063402</code></pre>
+<hr />
+</div>
+<div id="visualize-1-plot-the-kaplan-meier-curve." class="section level2">
+<h2><font face="微软雅黑"> Visualize 1: Plot the Kaplan-Meier curve.
+</font></h2>
+<p><font face="微软雅黑"> The function <code>plotSurvival</code> is used
+to plot the Kaplan-Meier. The user needs to enter the result of the
+<code>SingleMiRNA_CRModel</code> function or the
+<code>MutiMiRNA_CRModel</code> function. The commands are as follows:
+</font></p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="co"># load depend package</span></span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="fu">require</span>(survminer)</span></code></pre></div>
+<pre><code>## Warning: package &#39;survminer&#39; was built under R version 4.2.2</code></pre>
+<pre><code>## Warning: package &#39;ggplot2&#39; was built under R version 4.2.3</code></pre>
+<pre><code>## Warning: package &#39;ggpubr&#39; was built under R version 4.2.3</code></pre>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="fu">require</span>(survival)</span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a><span class="do">###Get the survival and gene expression data</span></span>
+<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a>GEP<span class="ot">&lt;-</span><span class="fu">GetData_Mirna</span>(<span class="st">&quot;GEP&quot;</span>)</span>
+<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a>survival<span class="ot">&lt;-</span><span class="fu">GetData_Mirna</span>(<span class="st">&quot;survival&quot;</span>)</span>
+<span id="cb20-6"><a href="#cb20-6" tabindex="-1"></a><span class="co"># plot the Kaplan-Meier curve</span></span>
+<span id="cb20-7"><a href="#cb20-7" tabindex="-1"></a>SingleMiRNA_CRData<span class="ot">&lt;-</span><span class="fu">SingleMiRNA_CRModel</span>(GEP,<span class="st">&quot;hsa-miR-21-5p&quot;</span>,<span class="at">cutoff.point=</span><span class="cn">NULL</span>,survival)</span>
+<span id="cb20-8"><a href="#cb20-8" tabindex="-1"></a><span class="fu">PlotSurvival</span>(SingleMiRNA_CRData)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<hr />
+</div>
+<div id="visualize-2-plot-the-heatmap-of-mirna-targets-expression." class="section level2">
+<h2><font face="微软雅黑"> Visualize 2: Plot the heatmap of miRNA
+targets expression.</font></h2>
+<div id="section" class="section level5">
+<h5></h5>
+<p><font face="微软雅黑"> The function <code>PlotHeatmap</code> can plot
+the heatmap of miRNA target expression. The user needs to enter the
+result of the <code>SingleMiRNA_CRModel</code> function or the
+<code>MutiMiRNA_CRModel</code>. The commands are as follows: </font></p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="co"># load depend package</span></span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a><span class="fu">require</span>(pheatmap)</span>
+<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a><span class="fu">require</span>(survival)</span>
+<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a><span class="do">###Get the survival and gene expression data</span></span>
+<span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a>GEP<span class="ot">&lt;-</span><span class="fu">GetData_Mirna</span>(<span class="st">&quot;GEP&quot;</span>)</span>
+<span id="cb21-6"><a href="#cb21-6" tabindex="-1"></a>survival<span class="ot">&lt;-</span><span class="fu">GetData_Mirna</span>(<span class="st">&quot;survival&quot;</span>)</span>
+<span id="cb21-7"><a href="#cb21-7" tabindex="-1"></a><span class="co"># plot the heatmap of miRNA targets expression</span></span>
+<span id="cb21-8"><a href="#cb21-8" tabindex="-1"></a>SingleMiRNA_CRData<span class="ot">&lt;-</span><span class="fu">SingleMiRNA_CRModel</span>(GEP,<span class="st">&quot;hsa-miR-21-5p&quot;</span>,<span class="at">cutoff.point=</span><span class="cn">NULL</span>,survival)</span>
+<span id="cb21-9"><a href="#cb21-9" tabindex="-1"></a><span class="fu">PlotHeatmap</span>(SingleMiRNA_CRData)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<hr />
+</div>
+</div>
+<div id="visualize-3-plot-the-forest-diagram." class="section level2">
+<h2><font face="微软雅黑"> Visualize 3: Plot the forest
+diagram.</font></h2>
+<div id="section-1" class="section level5">
+<h5></h5>
+<p><font face="微软雅黑"> The function <code>PlotForest</code> can
+visualize the result of Cox regression analysis through forest plot. The
+user needs to enter the result of the <code>SingleMiRNA_CRModel</code>
+function or the <code>MutiMiRNA_CRModel</code>. The commands are as
+follows: </font></p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="co"># load depend package</span></span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a><span class="fu">require</span>(forestplot)</span></code></pre></div>
+<pre><code>## Warning: package &#39;forestplot&#39; was built under R version 4.2.3</code></pre>
+<pre><code>## Warning: package &#39;checkmate&#39; was built under R version 4.2.3</code></pre>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a><span class="fu">require</span>(survival)</span>
+<span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a><span class="do">###Get the survival and gene expression data</span></span>
+<span id="cb25-3"><a href="#cb25-3" tabindex="-1"></a>GEP<span class="ot">&lt;-</span><span class="fu">GetData_Mirna</span>(<span class="st">&quot;GEP&quot;</span>)</span>
+<span id="cb25-4"><a href="#cb25-4" tabindex="-1"></a>survival<span class="ot">&lt;-</span><span class="fu">GetData_Mirna</span>(<span class="st">&quot;survival&quot;</span>)</span>
+<span id="cb25-5"><a href="#cb25-5" tabindex="-1"></a><span class="co"># plot the forest diagram</span></span>
+<span id="cb25-6"><a href="#cb25-6" tabindex="-1"></a>SingleMiRNA_CRData<span class="ot">&lt;-</span><span class="fu">SingleMiRNA_CRModel</span>(GEP,<span class="st">&quot;hsa-miR-21-5p&quot;</span>,<span class="at">cutoff.point=</span><span class="cn">NULL</span>,survival)</span>
+<span id="cb25-7"><a href="#cb25-7" tabindex="-1"></a><span class="fu">PlotForest</span>(SingleMiRNA_CRData)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<hr />
+</div>
+</div>
+<div id="visualize-4-plot-the-scatter-diagram." class="section level2">
+<h2><font face="微软雅黑"> Visualize 4: Plot the Scatter
+diagram.</font></h2>
+<div id="section-2" class="section level5">
+<h5></h5>
+<p><font face="微软雅黑"> The function <code>PlotScatter</code> can
+visualize the clinical information of samples through scatter diagram.
+The user needs to enter the result of the
+<code>SingleMiRNA_CRModel</code> function or the
+<code>MutiMiRNA_CRModel</code>. The commands are as follows: </font></p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="co"># load depend package</span></span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a><span class="fu">require</span>(egg)</span></code></pre></div>
+<pre><code>## Warning: package &#39;egg&#39; was built under R version 4.2.3</code></pre>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="fu">require</span>(survival)</span>
+<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a><span class="fu">require</span>(ggplot2)</span>
+<span id="cb28-3"><a href="#cb28-3" tabindex="-1"></a><span class="do">###Get the survival and gene expression data</span></span>
+<span id="cb28-4"><a href="#cb28-4" tabindex="-1"></a>GEP<span class="ot">&lt;-</span><span class="fu">GetData_Mirna</span>(<span class="st">&quot;GEP&quot;</span>)</span>
+<span id="cb28-5"><a href="#cb28-5" tabindex="-1"></a>survival<span class="ot">&lt;-</span><span class="fu">GetData_Mirna</span>(<span class="st">&quot;survival&quot;</span>)</span>
+<span id="cb28-6"><a href="#cb28-6" tabindex="-1"></a><span class="co"># plot the scatter diagram</span></span>
+<span id="cb28-7"><a href="#cb28-7" tabindex="-1"></a>SingleMiRNA_CRData<span class="ot">&lt;-</span><span class="fu">SingleMiRNA_CRModel</span>(GEP,<span class="st">&quot;hsa-miR-21-5p&quot;</span>,<span class="at">cutoff.point=</span><span class="cn">NULL</span>,survival)</span>
+<span id="cb28-8"><a href="#cb28-8" tabindex="-1"></a><span class="fu">PlotScatter</span>(SingleMiRNA_CRData)</span></code></pre></div>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASAAAAEgCAMAAAAjXV6yAAABmFBMVEUAAAAAABcAACgAADoAAFgAAGYAAJAAALYAANsAAP8AIRcAOjoAOmYAOpAAWLYAZpAAZrYXAAAzMzM6AAA6ADo6AGY6OgA6Ojo6OmY6OpA6WJA6ZmY6ZpA6ZrY6kJA6kLY6kNtJKABJZmZJtv9NTU1NTW5NTY5NbqtNjshmAABmADpmAGZmOgBmOjpmOmZmZgBmZjpmZmZmZpBmkGZmkJBmkLZmkNtmtrZmtttmtv9m2/9uTU1uTW5uTY5ubm5uq+SBZgCOTU2OTW6OyP+QAACQOgCQOjqQZgCQZjqQZmaQZraQkDqQkGaQkNuQtpCQtraQttuQ27aQ2/+d/7ad//+rbk2ryKur5P+2AAC2ZgC2Zjq2kDq2kGa2tma2tpC2tra2ttu2tv+225C227a229u22/+2/7a2/9u2///Ijk3I///bAADbkDrbkGbbtmbbtpDbtrbbttvb25Db27bb29vb2//b/7bb/9vb///kq27k///y8vL/AAD/tmb/yI7/25D/27b/29v/5Kv//7b//8j//9v//+T///9sHD/qAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAXXUlEQVR4nO2djZ8cRVrHC8clGcnK6hyEM4m3eovH4MZj44UjcooYVkHR86IIHU6IGjA55nbBLLJ7dmc3GYb+t62nqqu63l+6e7p7Zvv3+WR2Xnpqur6peuqpt6dQPsgpRB5PJwihrY5vpZ+igGaYD9p40PG99FIE0GIfAKFbXd9MH0UA4Rq28eOhjhlFACUYTobQ6E7Xd9NDAaD5FFcveNju+m56KACUEQONDfXmcfVEIr8R/5WOBDeaEPODDVHVOrYyua0gVNQw2pRVrGOtAErTNn5FE2I1jDhDFV2hNgCl3QFKUKlqrlALgNLuAEEN46rmCq03oEzgU7GOrTeghDfv0GU1mekv37/xzVfuRKJ/NvornQESqEA7prtCB/iCjc+nLh+pFT+oK0AzoYsxM3Q3MnTpv6YbDxKXC7DWfpBYagx1bLE/ujPHgE4njiK01oA8nwMc9q9yIqusAZBH3rwl0NHfeJC5XKRzDeh0MroyGf35xNWRPdeA8tNd8CAvuTr66z7c4dSXX+eLR/e/rpeI/o21AeQ0zqGJrLIGQB5585ZNnnfXr5BEVljeEnR94u/on2dAi/f2Ct3oZ1ejmPQkXaSk7A6dTuSxPzK5XmVSopG8dQuIZHuGVCDS6xkAhH5ldPodAWqumS8AFX+4ZEAZ7YMv9uNHTANu9PC1y5ev/HPNRNRvLAUQVLGMmksCiI/RsLo3ex1f9Pw+DOrMaLWkzPDn8+lPjVOn3huFOj6auOtvD6rYfEoBARh4C/5mrNrNp0LJodQSzOh0si0CwlfDO4q8eZuhS5/l+dluXwfMRBuE85kVjS0GVNYyKd8JXEHfmY3uCIDgyUxrq72tWGHYlAGzb9/e2fmTX4UmskyxVgxgkBJEi83p5KdlsaE4YHoLZ4ZUt4zkCiMUAMH3Ms2Mh3rSskf97duv5PnDH/0mMJFGZBmTJiVoTofMIe8EGFSWjX/gmeVVbOYFpM0M+gGxEiQCevzyh3n+9GcfBibShGyzGrSKnU6KfNK3EK5f23M+0cCbOAUQxlG7BLGWYKYPmLUKyDovptgg8l5hgMriwJ5xQLINgjTmU/JOtA0CF/Sln39y3bDyg1YxYgACcyn8bOxXfICICQAjDfeJM05bM57dGW26UOELsFZsi9rsDAEg/E6mN0X+Gz2jA2afqe+fvMwKUBt+kA8QySTkfUZNMWnCaMUjIhPshFdRzAo/iNisrRkAujIxrU0IudHF0ZHuBJ3s3I5KpK6WPbNKq5iuqnl7WJaf9ZibrwlooYwJnZROUHgiNZT2F9DiLtTcuTw3XzZgYYnU1vIB2RTQ1QA0i7tSM3+yQ8Ss0HkGxBzFjmdW+wzI1NWITMTwjciv9BcQuO3wN3ONd5xnQDAAdeXnn7zmXN95nqtYnh++SDxp15Bil4D+z6zGfrmyJx2bSD31G1A7ibiU9hfQV1B2Dvf2Gh60j1RvAR2QYbK7YISuVU6kAfUV0Olk9DpMpGwdn02bbcXimvm0r4ASOhQOvnSnflBfAdEZDToi1WlXow4gOtZc/tVfuOXKG4VCh+VWABC+wgFIUqOA6IC3PKsRkUgDSoMAkUvaBUT7YcQEmWY1whKprzQIUHGNAdBPyFgzZZIgNHof9g78xDgAbZAzbxm6dP+Q1DA2YVkhkdqqCwhWKgCTW2wKA17QNwN+3Z23u3QqYL7foR/k5hMAaJtMlAEgOlufAKBtfY2VWZ68Pfr0HmnCnH3V5Tbzbj5hNgg/wF+6siErilOYIer9AipPAQprxQpAs9UBFKZUkO2aID9o9UpQkNKmAVGrM1sLQKki64UxgIRWbNUBqXwaAgR+0Ma/w+63PgB6orye7xKHbdfkoS1+OUGjm8clkI+wIzf9gj+9au0p+wDpygI2V5SqPDe/s8MXmJkT+fULyn0kdAWcMU5REf2h5FO+foc8s44lxAAiNsg2x2yRd17sH4snh38m5vfkR7/57oNXnIkkyn8UXa1TrNkRWBAh9FGaTtFUf/0FrLw527euIY0qQVl8+A3/xCFdgn0XyWsUb+f5Y76AwQpoLOgiepY/jhVAH6F34M8E6a8pUGkhr6T4KhansCV4BxO0Ka6gIosXCKUiEVhl9f3P2OARfvwG1lJeGI8vjPBfYLIB/3kX6OP4CwqA6x30hfBHfG1YuSyrc0C4P3Z1F43ekN4jhYcCIhaCbBXBZawsJhcpiWeLnUIyoFQFNEVFwflIfA2FMEO3DjH8q9oCN6buAUGP9ZpiIgtAb7FEwEQsPkZSPQIqY1KKLo7IY/mR1ogbAeUU0GX3ZqweACpWQIoSShBJBFsIzdAAoAvU4lyE56GA8tLiEEDoB8f5k3etw1FdApIiC0n/h6oNmmzrlhigPIsukrdHI9lIi80XQhMREP1hAVCxT8dWhDoFdP2yoJccrdjkYhwgSigv2t1tdUuT8JoN2qhOA1cfqphBD2U/CGzMmFcmWrNYFcuL/3/ewB3n2nBHUuwM2NJeF4WpnyXIJexJcz45brIuQnG5AFb5IqZEAI2Ikcb2na7fcwHKiDe4K6yM568TSAE7ilVtUMT4vFFhgA6v29tZrKI1HzF359IuXdG9RbeK0s6FCEgbDk54BDX6Ufl6vhvaiuFf7wIQFO4MuQO9Ql0izg7Wryfo6jdkB84udKDO3sVfvfZ17gG0+Jh0VnP2Ufkal7+J7meUEvkIhPjnSweUIPCKt53RX1hvotadVJTEpyTEPyeAMrLvgGxcycRdLwEK2VB3OqFRqKwXdcgnCFBG5sW28hmp+Vs4U+Ed+pBVrhnyBFjqkE8IIMojG92BrUDJHvYdvhe+PTwE0IxYW0ep7JBPiA2ivhSdG5u/+k8vPIgZMguwQS/BrGritUHBP0l+trFR2oBWjAKCupZsn37/f1+9k0Rsnw9oxWBWdT695IDeD0BWP4iXIGyEPt7Kkx/sRzRsATf6BFrnI9cVvahidkDcBuWnL/x4O589F2GCmhm07zkg3orlxb7LmCAnvvVBZY/e14qF/2ajCgFU+EE57fN6ByklOdcHvXfjOCg8Tp8B1VVjVayJdKpoAORR14CesM2qB+o8oKB4Pu0183XlvlHcNacTGot3PUY69mfb2EneiJw3OkOjK2Sn2MHEuR+qyyq2bPlXueKe2IFrQCY/v4DYQnJPJNfzDgi7ij7Pc435BAHyrideYz5BgLyjJyvTJFVQR4DWo5nHaO4fHT0ij0dHUniTukHe1gWQbW5eCfJ2Xm3Q4stPBd0TmjIlyNt5bcU8kgCtLaEagMogbwMgk4QgbwMgg8Qgb2vMJx4QBJ96SwnyFs9nPZp5h+oGeVt3QEqQt3VWNUBKkLd11soU9a40APJoAOTRAMijAZBHAyCPBkAeDYA8GgB5NADyaADkERKG5p9z7lg5p0LS3MUzf+A+WP4cSgaERv/iPFj+HIoCouf+/A4m9EPnwfLnUBzQYn/0C/zsh85NGedQHNB8uvH5FD3zF0Enz54jCYB++6+xDfrXKoDWe0xaMtKeg+WtiTSttKMI9rokQM/8nudgeWsicfJmn22r74GUEuRdjmhJJEre7BdRGeJvZAkqm3mIToLQ71ZLhCosU/7s9xQQDYFWpQkrAAXmamUBHe79EUK/9ceubT3WRECh2Qq4rj98BECzgI1h1kRAwf/vJOiL95LYm1iSVCNdKUxBJKDcD6hIr8rNNCwFULwPRBMharZi9KSaSYBecgZFdiVC1TifHhAqi/rpZKtqLzXOD2rKGWhHQt4OJ0gLNRWdiF+NOQPtqMwbbsVGKqDHbJnL0zd3aGxSFqLUH6rUopi2rgd8yrxhU/SG+RJYzfq4oMFClAaEKhUkrmGMaet6wEcEZPF/yKLxEwqDBXcLCVVaSto1zoLf1bzv1lTeaGLuxtOC8pDGlGThAbVQpS4p0YVWFtBif9M060MK0Ldv/xXZvMICTAqBJn8fKwpQT6pOqMoqdv2ysavxEArQ0zdxCXr6l79iIUrVUKX0jyXngfGpespNBGSIKCnUI7HkqKFKyaPV+Iby6SUhny0oLbFoe0w2yNE8hfKpRqg8Sn4mzlhJL6rLB+iEtO+0xPzNh65WrJ5nV/3bNNorNDFSMPbIyOxWIZqYNQ4OMUG4KQMgmBULUfpQ94O6AkRD/kF4oOUBssfB+e4DaohhCybzoAkXKVSpxwaZflYruVX58Ai5ZIM//s+FIJ4QJBe/+G8InEgIZpXGucidVvmSJZGIHBr8IP7tyL1DZUApUmgAB0SUhBcLBgjil5Uko0Rv9MnXnstCEqkqBUh0tCYeSBWYFKfTgMkQAMUdpSGJ26CqCfBEqkoBUimqJzagpZGGuH0KIPf5cU61C8hQCVUgFcOeQkxeWsWAjlqCCLQaw8ltATIZ4rqAWMjyjJ47Rxt9DVDOYtlEq01AxqZcAxJZgFj8+4JJRkNXC4C4cQ47sk9VAWh0ZW8vINydKxG/zL6OBqRSKwYlhxrpLRj7Y/WNHJeFjTRgCzv0UVUByBZiISIRvwRAYjNfd0swufvirFMaHHzzAA7BxC/A9GzRIMnukOF2dWSDVmw8qDlAHl+xnx12p5oF1NcxixpqFFBfpmqaFO+s1k4kX2NATSUyAPIlsn58GgYU3EytWDNvl3XKOXDq2QaMAep/gfMAsk05e6ee01KO5FegSnoAWaacvVPPaWohJL1swqi3Ei7Z3hezTDn7pp5TGyD5rZUBVA7YK71525Szb+rZBkh5b2UAWWWbcjZPPZfyFSCJUL0MdB2yPTeWHOPUsyi7BdIqWc0MtAnoiASU/OSG0i8z2B7/8hdL5WF4VjGmfXHanmSkbVPOgQuoDENhKwwIjoEaXbkuDbxZp5wNU8+6isFUpTA1YHdEhQAq9uHC6VnRB/oJS/BGdxIyUinOaVunnOWpZ2OWi+F4xRZplqnmiGvJxHx8Ftbp914rjhyvMGovrVGcoVvuk9YsMhcKmY/cspeXq8vzYn9b5GM6gC2HCY//5CeMRUsCRKcG4gfPjBY5dQMqJ+JLQlVqn8THcIQfzPts0QkyWsXo7E9GKgvy74GXFnHCnMnppD4gyDF+QwGUFm9bARn8AjFFs/yACAuwrBQQn02E9/wnRZWAMlgugv7QfiauXUrGGBfRRjNeah0TAI3tgByTiX5AMLNKZskKIz3DJQC/pjP53mUNQgN08MKD012EXGf1WaTzGXMgnFDxrroMuORjB+SajvbaIFpIEkKFACJHstEjMwOmW9UWutJCGClfrGaVueKA2HWSH8RyXn7OEhM+CQBka8XYRsFbvJlPtsiSmLAdco04bBIfZpx1QA4bk/OKWZoi5kaNAwGZ/SBqcoolehRQtvE5LUQheRNaMdfxRm5JfNIyRyxXBaESkL0ilTZrLIP22SAbIMZhBqs/KKD5dI9WuJC8cUDkzOmr90O+oydS3j5vrlj+mNUp/6blRaDyu5LJ4l6Cm48XUMLXdmxzTzopzyW3bMAQ8iY8f8RP9o6UUlQEG5Jaxb7D2zaWmBGQvWZ6AJVGOIGKRQFl1PDMQlZqKDboEDdjm9HN2JjnUigj7B0zJNrOpbI3Sese+wb7RLDu8YBqSzXSj/62wvIXKZdy7qyAtOtKuuOSkHSt8bdbBXQGdaxCpDcXH7MQclyoJdYPQE9+Oam671nL5Tg1A2KVpQSk0WDU1E+qNvN1JW7JfO6NiksYUj2TFj6yqyOVD+VChXplP6iuSkB/X30xuSGLtnzLvo7leub+KKbK+NttG+lKMgEq8y0XA1I4jPCky9KilvUDkH23DztHzL0tnOXMQIpklX9e5NNS/UQ+qc6nQ0DW3T78HDH3tnAOwEiIZ533yiUDJUCQnohlr2tAVvFzxNzbwvXclv/749JJ4s9KT0cmpJWl3gMiAkDubeFScZFzKZoSoTDRZt7iKZkco+4B2XvzuIr5t4UrBIRCI+czFQHZpBKqBSjxD/u4Rj78vXk4R8y7LVzMiAxIyacJh/MdPjbpBYQvNAIi3XmyRaEWoNzSmy/PEXPMzYv/00oJchQMCw7DhyGAyIVWQE4IoYByQ29eOEfMPjcvlhGlsIyFnLo6Zyqf0k6Pw0pQcb0VEB1Z5DM9Cat1EPTm/XBAam++OEfMsy1cLiRjxfuxlA0PIN7OSaO31QGRv3ymJ9liA2ZkP1AoIK03z84R82wLlwAVAz0qkSDzI3nT5bNGABUbyshMz/zVO3QsjY6nuYYV3b15fo6YZ1u4mkPd/pgLjN6gm1k1YIMAkDTTk0Edo9NiQTaoVm/elGG5zVJIFH6QRkh7OQ4G5G7FcnmmB1seMmE/iwD0p/9RjQ4FNFbzO64GSB5WYqrTWRWMNAdBChE8RJWg6jt+0pSZUiVzqVOGKwzjkgxQ1RFFoZnnMz2ES4aYDXJt1mwSUOoGZBpUczf+vPDQl3UA0QloNtMDXLBN2abvBLZi2eT5qkNmPPsuv1nzjIp3xBbPWKDqAhK7GmymB7wfsl4s3A+aXzesUYwAJGXFREjqwQtvGVwC+XNeMqsBqqmyL2aM/hImlYGKRCtdYglxAircqj4AqiMxv5Z8Oi+wiZmoNQck1DT+xD3cwS4e875qWr0VqynBkz4qFG+q3QWkIiChAXP5QcuW6ElXNtKssbYPZ+gtmA8PBzTuCaDFl2Qfwmujm/eqGGk3IL2Jt7bsAh1mpZ2e9LKl2aDZKH4xsTmfZbkaGz52d+7H7HvM/+wPoHmFA8bK3DlHB62AzPjGjGzfAFV3FIMVMpg2Fotef6rY4mNUsQSFwdBs0coAKluxSjbInlH5swJQSDNfkCn/NJrxUGldjRth6ziNc/MuU8ycYvrKCkjrrgpFbgnZ96uiJ63NzTMTrfRIZUABPQ3zAJGjq7FsVQOkz2ooRLSuu6NL6gQkqrlcR4gD+gpM8+HeXtAaPMO8mEyGP9qda+0Nc+ERni4j/14VgA7IJqi7YKOvBXxLmZsX8xPUYTcC8l6/TA5WUUCnk9HrEDJ36/hsGtKKKXPzIUzkDFtscW8BJYjPn2UhfpAyNx9HJ3cTUtKjv9BxK7bYp/ErAU2QJ22cm7eB0gNVQDM/Ft4QCbEElQ0v3fpBFApdIRIEKO7gEdPPrlaAJQqFbvEI27Oq7JtvRUtj4FRRxYBNUoT7DNqzagjZbk0+6oNmBoGbE72dDF26f0hqWKXQ1OsPiHhAsAtvP8wPMicS88mqAcoffXrvuN6+zDVVz/6/+qcBkEcDII8GQB41AEgaXAR998HOzlviJ/wKazxPWANp/krXqg9IHlwEPXyF9vS1rUGw4wP2DmkffPcBPDN9pXPVBqR0y/KiJ3sCGzyURdXkA/ygr7Ymu4rsMdK6VG1ASseeCQPSluWzTWf6en3CAr+0rOTvUrUBKUNDhQgPdWPHySuPLXuGaAnase0F6VJNAXpLfA9badilqG4Negj9W1yM9D1DsLMRf+m2/knnWlIJgre14gD22bJnCLdiL//bzz5cxxJkMRemrUFkX6d9z9Ca2iC9wWH//VqTZN8zZG34uld9P+ih6rJYtwYxT0ffMwSPT9+8bYv02aWa8aTlrIAnbdwaZP2AeNK3c9MnXWvoi3k0APJoAOTRAMijAZBHAyCPBkAetQCIbaV97qZl2UjFU5jbUYuAkG1SewBEJ7MPJ5adjwOgW8oTRQMgCdDBiwiNbsL51Jv/s4tGrxeA5tON+AiXLaj1KlbEv96mB3gXzzaP4dSK5d9KBbVqpK/lRUE5nW4eY0Bbx2Q5Egb0zX5P+bTazL9BXx99+t6LCADBUrY5QbX5d33l01oVO9sHa5PzI4QIlmNqf0hl8x5w0ZFas0GYAjCYT9GVm/ceTWVAo1/01QS1aKSpGaYv5gogiFwTf5xHK2qxFSNL1GE1f362i1RAdB1pD9WmH5SQo4Ooxd54IAOqdOhSG2oTEKlkuPTg9iwZ3VEAsUPA+qZhuMOjAZBHAyCPBkAeDYA8GgB5NADyaADk0QDIowGQRwMgj/4fc20zqtNT5TAAAAAASUVORK5CYII=" /><!-- --></p>
+<hr />
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
